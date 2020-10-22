@@ -1,4 +1,4 @@
-import {
+const {
   capitalize,
   properCaseName,
   mapToQueryString,
@@ -17,7 +17,7 @@ import {
   putLastNameFirst,
   getNamesFromString,
   isPrisonerIdentifier,
-} from './utils'
+} = require('./utils')
 
 describe('capitalize()', () => {
   describe('when a string IS NOT provided', () => {

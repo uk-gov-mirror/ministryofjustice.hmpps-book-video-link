@@ -1,4 +1,4 @@
-import { factory } from '../controllers/controller'
+const { factory } = require('../controllers/controller')
 
 const { makeResetError, makeError, makeResetErrorWithStack } = require('./helpers')
 

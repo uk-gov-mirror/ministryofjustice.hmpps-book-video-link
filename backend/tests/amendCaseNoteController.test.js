@@ -1,4 +1,4 @@
-import { makeError } from './helpers'
+const { makeError } = require('./helpers')
 
 const amendCaseNoteController = require('../controllers/amendmentCaseNote')
 

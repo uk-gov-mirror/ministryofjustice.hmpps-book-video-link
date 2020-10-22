@@ -1,5 +1,5 @@
-import moment from 'moment'
-import RecurringAppointments from './RecurringAppointments'
+const moment = require('moment')
+const RecurringAppointments = require('./RecurringAppointments')
 
 describe('Recurring appointments', () => {
   it('should calculate the end date for 4 days ( Monday to Friday)', () => {
