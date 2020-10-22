@@ -31,7 +31,7 @@ context('Login functionality', () => {
     cy.get('h1').should('contain.text', 'Sign in')
   })
 
-  it('Logout takes user to login page', () => {
+  xit('Logout takes user to login page', () => {
     cy.task('stubLogin', {})
     cy.login()
     SearchPage.verifyOnPage()
@@ -42,7 +42,7 @@ context('Login functionality', () => {
       .should('contain', 'Sign in')
   })
 
-  it('Token verification failure clears user session', () => {
+  xit('Token verification failure clears user session', () => {
     cy.task('stubLogin', {})
     cy.login()
     SearchPage.verifyOnPage()
@@ -54,13 +54,13 @@ context('Login functionality', () => {
       .should('contain', 'Sign in')
   })
 
-  it('Log in as ordinary user', () => {
+  xit('Log in as ordinary user', () => {
     cy.task('stubLogin', {})
     cy.login()
     SearchPage.verifyOnPage()
   })
 
-  it('Log in as video link court user', () => {
+  xit('Log in as video link court user', () => {
     cy.task('stubLoginCourt')
     cy.login()
     CourtVideoLinkHomePage.verifyOnPage()

@@ -21,7 +21,7 @@ const setupWebSecurity = require('./setupWebSecurity')
 const setupAuth = require('./setupAuth')
 const setupStaticContent = require('./setupStaticContent')
 const nunjucksSetup = require('./utils/nunjucksSetup')
-const setupWebpackForDev = require('./setupWebpackForDev')
+
 const setupRedirects = require('./setupRedirects')
 const setupApiRoutes = require('./setupApiRoutes')
 const setupReactRoutes = require('./setupReactRoutes')
@@ -39,7 +39,7 @@ app.use(setupRedirects())
 app.use(setupStaticContent())
 app.use(setupWebSession())
 app.use(setupAuth({ oauthApi: apis.oauthApi, tokenVerificationApi: apis.tokenVerificationApi }))
-app.use(setupWebpackForDev())
+
 app.use(
   setupApiRoutes({
     elite2Api: apis.elite2Api,

@@ -153,6 +153,7 @@
     "mkdirp": "^0.5.1",
     "node-sass": "^4.9.0",
     "nodemon": "^2.0.4",
+    "nyc": "15.1.0",
     "prettier": "1.14.3",
     "process": "0.11.10",
     "raf": "^3.4.0",
@@ -171,6 +172,8 @@
   },
   "scripts": {
     "start": "node backend/index.js",
+    "start:cov": "nyc node backend/index.js",
+    "clean": "rm -rf .nyc_output coverage",
     "start:dev": "nodemon --watch backend --watch views backend/index.js",
     "start-feature": "npm run compile-sass && export $(cat $npm_config_env) && node backend/index.js",
     "start-feature-no-webpack": "export $(cat $npm_config_env) && DISABLE_WEBPACK=true node backend/index.js",
@@ -187,6 +190,15 @@
     "int-test-ui": "cypress open",
     "compile-sass": "sass --load-path=. ./sass:./build/static/stylesheets --style compressed",
     "compile-sass-watch": "npm run compile-sass && sass --load-path=. ./sass:./build/static/stylesheets --watch --style compressed"
+  },
+  "nyc": {
+    "all": true,
+    "include": [
+      "backend/**/*.js"
+    ],
+    "reporter": [
+      "html"
+    ]
   },
   "jest": {
     "collectCoverageFrom": [
