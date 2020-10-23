@@ -4,6 +4,10 @@ const config = require('./config')
 const router = express.Router()
 
 module.exports = () => {
+  router.get('/', (req, res) => {
+    return res.redirect(301, '/videolink')
+  })
+
   router.get('/add-bulk-appointments', (req, res) => {
     return res.redirect(301, '/bulk-appointments/need-to-upload-file')
   })
