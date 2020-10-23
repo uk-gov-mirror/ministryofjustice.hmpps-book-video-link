@@ -102,7 +102,6 @@ workflows:
           env: "dev"
           requires:
             - build_docker
-            - integration_tests
             - cypress_integration_tests
           filters:
             branches:
