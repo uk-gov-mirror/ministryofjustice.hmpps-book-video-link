@@ -43,7 +43,7 @@ const configureRoutes = ({ app, tokenRefresher, tokenVerifier, mailTo, homeLink 
    */
   const loginMiddleware = (req, res, next) => {
     if (req.isAuthenticated()) {
-      res.redirect('/')
+      res.redirect('/videolink')
       return
     }
     next()
