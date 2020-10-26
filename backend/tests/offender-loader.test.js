@@ -1,4 +1,4 @@
-import { offenderLoaderFactory } from '../controllers/offender-loader'
+const { offenderLoaderFactory } = require('../controllers/offender-loader')
 
 describe('offender loader', () => {
   const elite2Api = {}

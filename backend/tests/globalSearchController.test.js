@@ -1,4 +1,4 @@
-import { factory } from '../controllers/controller'
+const { factory } = require('../controllers/controller')
 
 describe('Global seach controller', () => {
   const globalSeachService = {}

@@ -1,4 +1,4 @@
-import { probationDocumentsFactory } from '../controllers/probationDocuments'
+const { probationDocumentsFactory } = require('../controllers/probationDocuments')
 
 function aDocument(overrides = {}) {
   return {

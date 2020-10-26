@@ -1,4 +1,4 @@
-import factory from '../controllers/reference-codes-service'
+const factory = require('../controllers/reference-codes-service')
 
 const context = {}
 const elite2Api = {}

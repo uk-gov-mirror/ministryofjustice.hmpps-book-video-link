@@ -1,4 +1,4 @@
-import { downloadProbationDocumentFactory } from '../controllers/downloadProbationDocument'
+const { downloadProbationDocumentFactory } = require('../controllers/downloadProbationDocument')
 
 describe('Download probation documents', () => {
   const oauthApi = {}

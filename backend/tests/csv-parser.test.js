@@ -1,5 +1,5 @@
-import config from '../config'
-import { csvParserService, validationMessages } from '../csv-parser'
+const config = require('../config')
+const { csvParserService, validationMessages } = require('../csv-parser')
 
 describe('csv-parser', () => {
   const fs = {}

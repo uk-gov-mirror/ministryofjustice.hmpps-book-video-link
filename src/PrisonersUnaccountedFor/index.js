@@ -1,3 +1,0 @@
-import PrisonersUnaccountedForContainer from './PrisonersUnaccountedForContainer'
-
-export default PrisonersUnaccountedForContainer

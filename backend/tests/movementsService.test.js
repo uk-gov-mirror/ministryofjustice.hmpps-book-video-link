@@ -1,4 +1,4 @@
-import { movementsServiceFactory } from '../services/movementsService'
+const { movementsServiceFactory } = require('../services/movementsService')
 
 describe('Movement service', () => {
   const eliteApi = {}

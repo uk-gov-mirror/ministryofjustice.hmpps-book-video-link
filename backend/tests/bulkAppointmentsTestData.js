@@ -1,4 +1,4 @@
-export const largePrisonersListed = [
+const largePrisonersListed = [
   {
     bookingId: 1054178,
     offenderNo: 'G3043GV',
@@ -1208,7 +1208,10 @@ export const largePrisonersListed = [
   },
 ]
 
-export const largePrisonersListedWithCell = largePrisonersListed.map((prisoner, i) => ({
-  ...prisoner,
-  assignedLivingUnitDesc: `CELL ${i}`,
-}))
+module.exports = {
+  largePrisonersListed,
+  largePrisonersListedWithCell: largePrisonersListed.map((prisoner, i) => ({
+    ...prisoner,
+    assignedLivingUnitDesc: `CELL ${i}`,
+  })),
+}
