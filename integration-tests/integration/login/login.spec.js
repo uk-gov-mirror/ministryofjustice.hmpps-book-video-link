@@ -24,38 +24,28 @@ context('Login functionality', () => {
   })
 
   it('Page redirects to the auth login page if not logged in', () => {
-    cy.task('stubLogin', {})
+    cy.task('stubLoginCourt')
     cy.visit('/login')
     cy.url().should('include', 'authorize')
     cy.get('h1').should('contain.text', 'Sign in')
   })
 
   it('Logout takes user to login page', () => {
-    cy.task('stubLogin', {})
+    cy.task('stubLoginCourt')
     cy.login()
     CourtVideoLinkHomePage.verifyOnPage()
 
     // can't do a visit here as cypress requires only one domain
-    cy.request('/auth/logout')
-      .its('body')
-      .should('contain', 'Sign in')
+    cy.request('/auth/logout').its('body').should('contain', 'Sign in')
   })
 
   it('Token verification failure clears user session', () => {
-    cy.task('stubLogin', {})
+    cy.task('stubLoginCourt')
     cy.login()
     CourtVideoLinkHomePage.verifyOnPage()
     cy.task('stubVerifyToken', false)
 
     // can't do a visit here as cypress requires only one domain
-    cy.request('/')
-      .its('body')
-      .should('contain', 'Sign in')
-  })
-
-  it('Log in as video link court user', () => {
-    cy.task('stubLoginCourt')
-    cy.login()
-    CourtVideoLinkHomePage.verifyOnPage()
+    cy.request('/').its('body').should('contain', 'Sign in')
   })
 })
