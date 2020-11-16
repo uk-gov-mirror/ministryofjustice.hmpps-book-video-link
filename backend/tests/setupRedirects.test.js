@@ -4,7 +4,7 @@ const request = require('supertest')
 const setupRedirects = require('../setupRedirects')
 const config = require('../config')
 
-config.app.supportUrl = '//supportUrl'
+config.app.supportUrl = '/supportUrl'
 
 describe('setup redirects', () => {
   let agent
@@ -16,6 +16,6 @@ describe('setup redirects', () => {
   })
 
   it('should redirect to the new support service when the old support url is used', done => {
-    agent.get('/content/support').expect('location', '//supportUrl').expect(301, done)
+    agent.get('/content/support').expect('location', '/supportUrl').expect(301, done)
   })
 })

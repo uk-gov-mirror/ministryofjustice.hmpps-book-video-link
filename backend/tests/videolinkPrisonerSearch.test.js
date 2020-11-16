@@ -37,7 +37,7 @@ describe('Video link prisoner search', () => {
     ])
     prisonApi.globalSearch = jest.fn()
 
-    controller = videolinkPrisonerSearchController({ oauthApi, prisonApi, logError })
+    controller = videolinkPrisonerSearchController({ prisonApi, logError })
   })
 
   const agencyOptions = [
@@ -50,39 +50,23 @@ describe('Video link prisoner search', () => {
       text: 'Prison 2',
     },
   ]
+  describe('when a search has not been made', () => {
+    it('should render the prisoner search template', async () => {
+      await controller(req, res)
 
-  describe('index', () => {
-    describe('when the user does not have the correct roles', () => {
-      it('should redirect back', async () => {
-        oauthApi.userRoles.mockReturnValue([])
-
-        await controller(req, res)
-
-        expect(prisonApi.getAgencies).not.toHaveBeenCalled()
-        expect(prisonApi.globalSearch).not.toHaveBeenCalled()
-        expect(res.redirect).toHaveBeenCalledWith('back')
+      expect(prisonApi.getAgencies).toHaveBeenCalled()
+      expect(res.render).toHaveBeenCalledWith('videolinkPrisonerSearch.njk', {
+        agencyOptions,
+        errors: [],
+        formValues: {},
+        hasSearched: false,
+        homeUrl: '/',
+        results: [],
       })
     })
-
+  })
+  describe('index', () => {
     describe('when the user does have the correct roles', () => {
-      beforeEach(() => {
-        oauthApi.userRoles.mockReturnValue([{ roleCode: 'VIDEO_LINK_COURT_USER' }])
-      })
-
-      it('should render the prisoner search template', async () => {
-        await controller(req, res)
-
-        expect(prisonApi.getAgencies).toHaveBeenCalled()
-        expect(res.render).toHaveBeenCalledWith('videolinkPrisonerSearch.njk', {
-          agencyOptions,
-          errors: [],
-          formValues: {},
-          hasSearched: false,
-          homeUrl: '/',
-          results: [],
-        })
-      })
-
       describe('when a search has been made', () => {
         beforeEach(() => {
           prisonApi.globalSearch.mockReturnValue([
@@ -226,14 +210,6 @@ describe('Video link prisoner search', () => {
     })
 
     describe('when there are API errors', () => {
-      it('should render the error template if there is an error retrieving user roles', async () => {
-        oauthApi.userRoles.mockImplementation(() => Promise.reject(new Error('Network error')))
-        await controller(req, res)
-
-        expect(logError).toHaveBeenCalledWith('http://localhost', new Error('Network error'), serviceUnavailableMessage)
-        expect(res.render).toHaveBeenCalledWith('error.njk', { url: '/', homeUrl: '/' })
-      })
-
       it('should render the error template if there is an error retrieving agencies', async () => {
         oauthApi.userRoles.mockReturnValue([{ roleCode: 'VIDEO_LINK_COURT_USER' }])
         prisonApi.getAgencies.mockImplementation(() => Promise.reject(new Error('Network error')))
