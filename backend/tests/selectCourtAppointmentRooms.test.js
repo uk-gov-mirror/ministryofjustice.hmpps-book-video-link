@@ -62,7 +62,7 @@ describe('Select court appointment rooms', () => {
 
     oauthApi.userEmail = jest.fn()
 
-    whereaboutsApi.videoLinkBooking = jest.fn()
+    whereaboutsApi.videoLinkBookings = jest.fn()
 
     appointmentsService.getAppointmentOptions = jest.fn()
     appointmentsService.getVideoLinkLocations = jest.fn()
@@ -344,7 +344,7 @@ describe('Select court appointment rooms', () => {
       const { createAppointments } = service
       await createAppointments(req, res)
 
-      expect(whereaboutsApi.videoLinkBooking).toHaveBeenCalledWith(
+      expect(whereaboutsApi.videoLinkBookings).toHaveBeenCalledWith(
         {},
         {
           bookingId: 1,
@@ -387,7 +387,7 @@ describe('Select court appointment rooms', () => {
 
       await createAppointments(req, res)
 
-      expect(whereaboutsApi.videoLinkBooking).toHaveBeenCalledWith(
+      expect(whereaboutsApi.videoLinkBookings).toHaveBeenCalledWith(
         {},
         {
           bookingId: 1,
@@ -428,7 +428,7 @@ describe('Select court appointment rooms', () => {
 
       await createAppointments(req, res)
 
-      expect(whereaboutsApi.videoLinkBooking).toHaveBeenCalledWith(
+      expect(whereaboutsApi.videoLinkBookings).toHaveBeenCalledWith(
         {},
         {
           bookingId: 1,
@@ -470,7 +470,7 @@ describe('Select court appointment rooms', () => {
 
       await createAppointments(req, res)
 
-      expect(whereaboutsApi.videoLinkBooking).toHaveBeenCalledWith(
+      expect(whereaboutsApi.videoLinkBookings).toHaveBeenCalledWith(
         {},
         {
           bookingId: 1,
@@ -507,7 +507,7 @@ describe('Select court appointment rooms', () => {
 
       await createAppointments(req, res)
 
-      expect(whereaboutsApi.videoLinkBooking).toHaveBeenCalledWith(
+      expect(whereaboutsApi.videoLinkBookings).toHaveBeenCalledWith(
         {},
         {
           bookingId: 1,

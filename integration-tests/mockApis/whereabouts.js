@@ -36,7 +36,7 @@ module.exports = {
     return stubFor({
       request: {
         method: 'POST',
-        url: '/whereabouts/video-link-booking',
+        url: '/whereabouts/video-link-bookings',
       },
       response: {
         status,
