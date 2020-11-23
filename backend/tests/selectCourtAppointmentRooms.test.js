@@ -1,9 +1,6 @@
 const { selectCourtAppointmentRoomsFactory } = require('../controllers/appointments/selectCourtAppointmentRooms')
 const { notifyClient } = require('../shared/notifyClient')
-const errorHandler = require('../middleware/errorHandler')
 const config = require('../config')
-
-jest.mock('../middleware/errorHandler')
 
 describe('Select court appointment rooms', () => {
   const prisonApi = {}
@@ -140,14 +137,7 @@ describe('Select court appointment rooms', () => {
 
       req.flash.mockImplementation(() => [])
 
-      await index(req, res)
-
-      expect(errorHandler).toHaveBeenCalledWith(
-        req,
-        res,
-        new Error('Appointment details are missing'),
-        '/MDI/offenders/A12345/add-appointment'
-      )
+      await expect(index(req, res)).rejects.toThrow('Appointment details are missing')
     })
 
     it('should call getAvailableLocationsForVLB with the correct parameters', async () => {
@@ -279,15 +269,7 @@ describe('Select court appointment rooms', () => {
       const { validateInput } = service
 
       req.flash.mockImplementation(() => [])
-
-      await validateInput(req, res)
-
-      expect(errorHandler).toHaveBeenCalledWith(
-        req,
-        res,
-        new Error('Appointment details are missing'),
-        '/MDI/offenders/A12345/add-appointment'
-      )
+      expect(() => validateInput(req, res)).toThrow('Appointment details are missing')
     })
 
     it('should pack appointment details back into flash before rendering', async () => {
