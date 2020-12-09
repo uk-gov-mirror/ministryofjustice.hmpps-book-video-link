@@ -1,5 +1,5 @@
 const nock = require('nock')
-const clientFactory = require('./oauthEnabledClient')
+const Client = require('./oauthEnabledClient')
 const contextProperties = require('../contextProperties')
 const logger = require('../log')
 
@@ -7,12 +7,12 @@ const hostname = 'http://localhost:8080'
 
 describe('Test clients built by oauthEnabledClient', () => {
   it('should build something', () => {
-    const client = clientFactory({ baseUrl: `${hostname}/`, timeout: 2000 })
+    const client = new Client({ baseUrl: `${hostname}/`, timeout: 2000 })
     expect(client).not.toBeNull()
   })
 
   describe('Assert client behaviour', () => {
-    const client = clientFactory({ baseUrl: `${hostname}/`, timeout: 2000 })
+    const client = new Client({ baseUrl: `${hostname}/`, timeout: 2000 })
     const getRequest = nock(hostname)
 
     beforeEach(() => {
@@ -26,7 +26,7 @@ describe('Test clients built by oauthEnabledClient', () => {
     it('Should set the authorization header with "Bearer <access token>"', async () => {
       const context = {}
       contextProperties.setTokens({ access_token: 'a', refresh_token: 'b', authSource: null }, context)
-
+      /** @type {any} */
       const response = await client.get(context, '/api/users/me')
 
       expect(response.status).toEqual(200)
@@ -34,6 +34,7 @@ describe('Test clients built by oauthEnabledClient', () => {
     })
 
     it('Should succeed when there are no authorization headers', async () => {
+      /** @type {any} */
       const response = await client.get({}, '/api/users/me')
       expect(response.request.header.authorization).toBeUndefined()
     })
@@ -41,7 +42,7 @@ describe('Test clients built by oauthEnabledClient', () => {
     it('Should set the pagination headers on requests', async () => {
       const context = {}
       contextProperties.setRequestPagination(context, { 'page-offset': '0', 'page-limit': '10' })
-
+      /** @type {any} */
       const response = await client.get(context, '/api/users/me')
 
       expect(response.request.header).toEqual(expect.objectContaining({ 'page-offset': '0', 'page-limit': '10' }))
@@ -50,7 +51,7 @@ describe('Test clients built by oauthEnabledClient', () => {
     it('Should set the results limit header override on requests', async () => {
       const context = {}
       contextProperties.setRequestPagination(context, { 'page-offset': '0', 'page-limit': '10' })
-
+      /** @type {any} */
       const response = await client.get(context, '/api/users/me', 500)
 
       expect(response.request.header).toEqual(expect.objectContaining({ 'page-offset': '0', 'page-limit': '500' }))
@@ -59,7 +60,7 @@ describe('Test clients built by oauthEnabledClient', () => {
     it('Should set custom headers on requests', async () => {
       const context = {}
       contextProperties.setCustomRequestHeaders(context, { 'custom-header': 'custom-value' })
-
+      /** @type {any} */
       const response = await client.get(context, '/api/users/me')
 
       expect(response.request.header).toEqual(expect.objectContaining({ 'custom-header': 'custom-value' }))
@@ -67,7 +68,7 @@ describe('Test clients built by oauthEnabledClient', () => {
   })
 
   describe('retry and timeout behaviour', () => {
-    const client = clientFactory({ baseUrl: `${hostname}/`, timeout: 900 })
+    const client = new Client({ baseUrl: `${hostname}/`, timeout: 900 })
     const mock = nock(hostname)
 
     afterEach(() => {
@@ -126,24 +127,24 @@ describe('Test clients built by oauthEnabledClient', () => {
     })
 
     it('Should set the url correctly if ends with a /', async () => {
-      const client = clientFactory({ baseUrl: `${hostname}/`, timeout: 2000 })
+      const client = new Client({ baseUrl: `${hostname}/`, timeout: 2000 })
       nock(hostname).get('/api/users/me').reply(200, {})
 
       const context = {}
       contextProperties.setTokens({ access_token: 'a', refresh_token: 'b', authSource: null }, context)
-
+      /** @type {any} */
       const response = await client.get(context, '/api/users/me')
 
       expect(response.request.url).toEqual('http://localhost:8080/api/users/me')
     })
 
     it("Should set the url correctly if doesn't end with a /", async () => {
-      const client = clientFactory({ baseUrl: hostname, timeout: 2000 })
+      const client = new Client({ baseUrl: hostname, timeout: 2000 })
       nock(hostname).get('/api/users/me').reply(200, {})
 
       const context = {}
       contextProperties.setTokens({ access_token: 'a', refresh_token: 'b', authSource: null }, context)
-
+      /** @type {any} */
       const response = await client.get(context, '/api/users/me')
 
       expect(response.request.url).toEqual('http://localhost:8080/api/users/me')
@@ -151,7 +152,7 @@ describe('Test clients built by oauthEnabledClient', () => {
   })
 
   describe('Logging', () => {
-    const client = clientFactory({ baseUrl: `${hostname}/`, timeout: 20000 })
+    const client = new Client({ baseUrl: `${hostname}/`, timeout: 20000 })
     logger.warn = jest.fn()
     afterEach(() => {
       nock.cleanAll()
@@ -171,6 +172,41 @@ describe('Test clients built by oauthEnabledClient', () => {
       await expect(client.get({}, '/api/users/me')).rejects.toThrow('Internal Server Error')
 
       expect(logger.warn).toHaveBeenCalledWith('API error in GET /api/users/me 500 Internal Server Error {}')
+    })
+  })
+
+  describe('Delete', () => {
+    const client = new Client({ baseUrl: `${hostname}/`, timeout: 20000 })
+    logger.warn = jest.fn()
+    afterEach(() => {
+      nock.cleanAll()
+    })
+
+    it('Should set the authorization header with "Bearer <access token>"', async () => {
+      const context = {}
+      contextProperties.setTokens({ access_token: 'a', refresh_token: 'b', authSource: null }, context)
+      nock(hostname).delete('/api/users/me').reply(200)
+      /** @type {any} */
+      const response = await client.delete(context, '/api/users/me')
+
+      expect(response.status).toEqual(200)
+      expect(response.request.header.authorization).toEqual('Bearer a')
+    })
+
+    it('Should log 404 correctly', async () => {
+      nock(hostname).delete('/api/users/me').reply(404)
+
+      await expect(client.delete({}, '/api/users/me')).rejects.toThrow('Not Found')
+
+      expect(logger.warn).toHaveBeenCalledWith('DELETE /api/users/me No record found')
+    })
+
+    it('Should log 500 correctly', async () => {
+      nock(hostname).delete('/api/users/me').reply(500).get('/api/users/me').reply(500).get('/api/users/me').reply(500)
+
+      await expect(client.delete({}, '/api/users/me')).rejects.toThrow('Internal Server Error')
+
+      expect(logger.warn).toHaveBeenCalledWith('API error in DELETE /api/users/me 500 Internal Server Error {}')
     })
   })
 })
