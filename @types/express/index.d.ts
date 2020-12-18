@@ -19,6 +19,9 @@ export declare global {
         username: string
         token: string
       }
+      flash(type: string, message: any): number
+      flash(message: string): any[]
+      flash(): { [key: string]: any[] }
     }
   }
 }
