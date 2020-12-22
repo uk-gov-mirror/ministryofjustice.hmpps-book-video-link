@@ -23,7 +23,10 @@
         <div class="govuk-grid-column-two-thirds">
             <h1 class="govuk-heading-xl">{{ title }}</h1>
             <p class="govuk-body">
-                You can try again.
+                {{ message }}
+                {% if not production %}
+                    <pre>{{ stack }}</pre>
+                {% endif %}
             </p>
             <p class="govuk-body">
                 {{ govukButton({
