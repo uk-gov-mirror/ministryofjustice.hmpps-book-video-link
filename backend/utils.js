@@ -272,7 +272,7 @@ const extractLocation = (location, agencyId) => {
 const flattenCalls = arg => {
   return Promise.all(arg).then(r => r.flat())
 }
-
+ 
 module.exports = {
   isBeforeToday,
   isToday,
