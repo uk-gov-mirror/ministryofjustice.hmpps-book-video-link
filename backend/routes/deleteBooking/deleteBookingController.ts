@@ -8,7 +8,7 @@ export = class DeleteBookingController {
     return async (req, res) => {
       const { bookingId } = req.params
       const bookingDetails = await this.bookingService.get(res.locals, parseInt(bookingId, 10))
-      res.render('changeBooking/confirmDeletion.njk', {
+      res.render('deleteBooking/confirmDeletion.njk', {
         bookingDetails: {
           videoBookingId: bookingDetails.videoBookingId,
           details: {
@@ -73,7 +73,7 @@ export = class DeleteBookingController {
       if (!offenderName) {
         return res.redirect('/bookings')
       }
-      return res.render('changeBooking/videoLinkDeleted.njk', {
+      return res.render('deleteBooking/videoLinkDeleted.njk', {
         offenderName: offenderName[0],
         offenderNo: offenderNo[0],
       })
