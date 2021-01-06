@@ -65,9 +65,9 @@ describe('existing events', () => {
       )
 
       expect(availableLocations).toEqual({
+        preLocations: [room(3)],
         mainLocations: [room(1)],
         postLocations: [room(1)],
-        preLocations: [room(3)],
       })
     })
   })

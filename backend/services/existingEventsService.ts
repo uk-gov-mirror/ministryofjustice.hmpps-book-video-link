@@ -25,6 +25,7 @@ const toAppointment: (PrisonerSchedule, locationId: number) => Appointment = (ev
   end: event.endTime,
 })
 
+
 export default class ExistingEventsService {
   constructor(private readonly prisonApi: PrisonApi, private readonly referenceDataService: ReferenceDataService) {}
 

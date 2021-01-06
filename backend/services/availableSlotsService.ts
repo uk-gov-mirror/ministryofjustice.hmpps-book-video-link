@@ -36,8 +36,7 @@ export default class AvailableSlotService {
 
     const endTime = moment(date, DATE_ONLY_FORMAT_SPEC).hour(endOfDay).minute(0).seconds(0).millisecond(0)
 
-    const duration = moment.duration(endTime.diff(startTime))
-    const totalMinutes = duration.asMinutes()
+    const totalMinutes = moment.duration(endTime.diff(startTime)).asMinutes()
 
     const numberOfSlots = Math.floor(totalMinutes / slotDuration)
 
