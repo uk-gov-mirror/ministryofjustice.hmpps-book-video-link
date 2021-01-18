@@ -1,4 +1,4 @@
-import { NewAppointment } from 'whereaboutsApi'
+import { NewAppointment, Interval } from 'whereaboutsApi'
 import { Moment } from 'moment'
 
 export type Context = unknown
@@ -6,6 +6,22 @@ export type Context = unknown
 export type Room = {
   value: number
   text: string
+}
+export type AvailabilityRequest = {
+  agencyId: string
+  date: Moment
+  startTime: Moment
+  endTime: Moment
+  preRequired: boolean
+  postRequired: boolean
+}
+
+export type LegacyRoomAvailability = { mainLocations: Room[]; preLocations: Room[]; postLocations: Room[] }
+
+export type RoomAvailability = {
+  isAvailable: boolean
+  rooms: { main: Room[]; pre: Room[]; post: Room[] }
+  totalInterval: Interval
 }
 
 export type AppointmentDetail = {
