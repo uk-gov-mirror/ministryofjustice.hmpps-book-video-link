@@ -24,7 +24,7 @@ describe('Select court appointment rooms', () => {
 
   const req = {
     originalUrl: 'http://localhost',
-    params: { agencyId: 'MDI', offenderNo: 'A12345' },
+    params: { agencyId: 'MDI', offenderNo: 'A12345', bookingId: '123' },
     session: { userDetails: { activeCaseLoadId: 'LEI', name: 'Court User' } },
     body: {},
     flash: jest.fn(),
@@ -142,7 +142,8 @@ describe('Select court appointment rooms', () => {
           endTime: moment('2017-11-10T14:00:00', DATE_TIME_FORMAT_SPEC, true),
           postRequired: true,
           preRequired: true,
-        }
+        },
+        123
       )
     })
   })

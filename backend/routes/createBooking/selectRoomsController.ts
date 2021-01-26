@@ -110,7 +110,7 @@ export default function selectCourtAppointmentRoomsFactory({
   notifyApi,
 }: Services): Handlers {
   const index = async (req, res) => {
-    const { offenderNo, agencyId } = req.params
+    const { offenderNo, agencyId, bookingId: appointmentBookingId } = req.params
 
     const appointmentDetails = unpackAppointmentDetails(req)
     const { startTime, endTime, preAppointmentRequired, postAppointmentRequired } = appointmentDetails
@@ -129,7 +129,11 @@ export default function selectCourtAppointmentRoomsFactory({
 
     const {
       rooms: { pre, main, post },
-    } = await availabilityCheckService.getAvailability(res.locals, availabilityRequest)
+    } = await availabilityCheckService.getAvailability(
+      res.locals,
+      availabilityRequest,
+      parseInt(appointmentBookingId, 10)
+    )
 
     packAppointmentDetails(req, {
       ...appointmentDetails,
