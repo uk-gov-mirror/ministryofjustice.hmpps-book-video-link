@@ -230,7 +230,7 @@ describe('Booking service', () => {
     })
   })
 
-  describe('Update comment', () => {
+  describe('Update', () => {
     const videoLinkBooking = {
       agencyId: 'WWI',
       bookingId: 789,
@@ -256,11 +256,13 @@ describe('Booking service', () => {
         whereaboutsApi.getVideoLinkBooking.mock.invocationCallOrder[0]
       )
     })
-  })
-
-  describe('Update', () => {
     it('Should call whereaboutsApi correctly when updating all appointments', async () => {
-      await service.update(context, 1234, {
+      whereaboutsApi.getVideoLinkBooking.mockResolvedValue(videoLinkBooking)
+      prisonApi.getAgencyDetails.mockResolvedValue(agencyDetail)
+      prisonApi.getPrisonBooking.mockResolvedValue(offenderDetails)
+      prisonApi.getLocationsForAppointments.mockResolvedValue([room(1), room(2), room(3)])
+
+      await service.update(context, 'A_USER', 1234, {
         comment: 'A comment',
         date: moment('2020-11-20T09:00:00', DATE_TIME_FORMAT_SPEC, true),
         startTime: moment('2020-11-20T09:00:00', DATE_TIME_FORMAT_SPEC, true),
@@ -276,10 +278,19 @@ describe('Booking service', () => {
         main: { locationId: 2, startTime: '2020-11-20T09:00:00', endTime: '2020-11-20T10:00:00' },
         post: { locationId: 3, startTime: '2020-11-20T10:00:00', endTime: '2020-11-20T10:20:00' },
       })
+      expect(notificationService.sendBookingUpdateEmails).toHaveBeenCalledWith(context, 'A_USER', bookingDetail)
+      expect(whereaboutsApi.updateVideoLinkBooking.mock.invocationCallOrder[0]).toBeLessThan(
+        whereaboutsApi.getVideoLinkBooking.mock.invocationCallOrder[0]
+      )
     })
 
     it('Should call whereaboutsApi correctly when updating mandatory appointment', async () => {
-      await service.update(context, 1234, {
+      whereaboutsApi.getVideoLinkBooking.mockResolvedValue(videoLinkBooking)
+      prisonApi.getAgencyDetails.mockResolvedValue(agencyDetail)
+      prisonApi.getPrisonBooking.mockResolvedValue(offenderDetails)
+      prisonApi.getLocationsForAppointments.mockResolvedValue([room(1), room(2), room(3)])
+
+      await service.update(context, 'A_USER', 1234, {
         comment: 'A comment',
         date: moment('2020-11-20T09:00:00', DATE_TIME_FORMAT_SPEC, true),
         startTime: moment('2020-11-20T09:00:00', DATE_TIME_FORMAT_SPEC, true),
@@ -291,6 +302,10 @@ describe('Booking service', () => {
         comment: 'A comment',
         main: { locationId: 2, startTime: '2020-11-20T09:00:00', endTime: '2020-11-20T10:00:00' },
       })
+      expect(notificationService.sendBookingUpdateEmails).toHaveBeenCalledWith(context, 'A_USER', bookingDetail)
+      expect(whereaboutsApi.updateVideoLinkBooking.mock.invocationCallOrder[0]).toBeLessThan(
+        whereaboutsApi.getVideoLinkBooking.mock.invocationCallOrder[0]
+      )
     })
   })
 
