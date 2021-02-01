@@ -11,12 +11,12 @@ jest.mock('../../services/bookingService')
 jest.mock('../../services/availabilityCheckService')
 
 describe('Select available rooms controller', () => {
-  const bookingService = new BookingService(null, null, null) as jest.Mocked<BookingService>
+  const bookingService = new BookingService(null, null, null, null) as jest.Mocked<BookingService>
   const availabilityCheckService = new AvailabilityCheckService(null) as jest.Mocked<AvailabilityCheckService>
   let controller: SelectAvailableRoomsController
   const req = ({
     originalUrl: 'http://localhost',
-    params: { agencyId: 'MDI', offenderNo: 'A12345', bookingId: '123' },
+    params: { agencyId: 'MDI', offenderNo: 'A12345', bookingId: '12' },
     session: { userDetails: { activeCaseLoadId: 'LEI', name: 'Bob Smith', username: 'BOB_SMITH' } },
     body: {},
     flash: jest.fn(),
@@ -98,7 +98,7 @@ describe('Select available rooms controller', () => {
 
       await controller.view()(req, res, null)
 
-      expect(res.redirect).toHaveBeenCalledWith('/booking-details/123')
+      expect(res.redirect).toHaveBeenCalledWith('/booking-details/12')
     })
 
     describe('View page with no errors', () => {
@@ -110,7 +110,7 @@ describe('Select available rooms controller', () => {
         await controller.view()(req, res, null)
 
         expect(res.render).toHaveBeenCalledWith('amendBooking/selectAvailableRooms.njk', {
-          bookingId: '123',
+          bookingId: '12',
           preAppointmentRequired: true,
           postAppointmentRequired: true,
           mainLocations: [{ value: 1, text: 'Room 1' }],
@@ -132,7 +132,7 @@ describe('Select available rooms controller', () => {
 
         expect(availabilityCheckService.getAvailability).toHaveBeenCalledWith(res.locals, {
           agencyId: 'WWI',
-          videoBookingId: 123,
+          videoBookingId: 12,
           date: moment('2020-11-20T00:00:00', DATE_TIME_FORMAT_SPEC, true),
           startTime: moment('2020-11-20T18:00:00', DATE_TIME_FORMAT_SPEC, true),
           endTime: moment('2020-11-20T19:00:00', DATE_TIME_FORMAT_SPEC, true),
@@ -161,7 +161,7 @@ describe('Select available rooms controller', () => {
         await controller.view()(req, res, null)
 
         expect(res.render).toHaveBeenCalledWith('amendBooking/selectAvailableRooms.njk', {
-          bookingId: '123',
+          bookingId: '12',
           preAppointmentRequired: true,
           postAppointmentRequired: true,
           mainLocations: [{ value: 1, text: 'Room 1' }],
@@ -188,7 +188,7 @@ describe('Select available rooms controller', () => {
         await controller.view()(req, res, null)
 
         expect(res.render).toHaveBeenCalledWith('amendBooking/selectAvailableRooms.njk', {
-          bookingId: '123',
+          bookingId: '12',
           preAppointmentRequired: true,
           postAppointmentRequired: true,
           mainLocations: [{ value: 1, text: 'Room 1' }],
@@ -206,52 +206,35 @@ describe('Select available rooms controller', () => {
   describe('submit', () => {
     it('should redirect to booking details confirmation page when no errors exist', async () => {
       bookingService.get.mockResolvedValue(bookingDetails)
-      availabilityCheckService.getAvailability.mockResolvedValue(availableLocations)
-
-      req.params.bookingId = '12'
+      bookingService.update.mockResolvedValue('AVAILABLE')
 
       await controller.submit()(req, res, null)
 
       expect(res.redirect).toHaveBeenCalledWith(`/video-link-change-confirmed/12`)
     })
 
-    it('throws an error when room is no longer available', async () => {
+    it('Redirect when room is no longer available', async () => {
       bookingService.get.mockResolvedValue(bookingDetails)
-      availabilityCheckService.getAvailability.mockResolvedValue({
-        isAvailable: false,
-        totalInterval: null,
-        rooms: { pre: [], post: [], main: [] },
-      })
-
-      req.params.bookingId = '12'
-
-      return expect(() => controller.submit()(req, res, null)).rejects.toThrow('Appointment is no longer available')
-    })
-
-    it('should make final availability check before performing update', async () => {
-      bookingService.get.mockResolvedValue(bookingDetails)
-      availabilityCheckService.getAvailability.mockResolvedValue(availableLocations)
-
-      req.params.bookingId = '12'
+      bookingService.update.mockResolvedValue('NO_LONGER_AVAILABLE')
 
       await controller.submit()(req, res, null)
 
-      expect(availabilityCheckService.getAvailability).toHaveBeenCalledWith(res.locals, {
-        agencyId: 'WWI',
-        videoBookingId: 12,
-        date: moment('2020-11-20T00:00:00', DATE_TIME_FORMAT_SPEC, true),
-        startTime: moment('2020-11-20T18:00:00', DATE_TIME_FORMAT_SPEC, true),
-        endTime: moment('2020-11-20T19:00:00', DATE_TIME_FORMAT_SPEC, true),
-        postRequired: true,
-        preRequired: true,
-      })
+      expect(res.redirect).toHaveBeenCalledWith(`/room-no-longer-available/12`)
+    })
+
+    it('Redirect when no longer any availability for date/time', async () => {
+      bookingService.get.mockResolvedValue(bookingDetails)
+      bookingService.update.mockResolvedValue('NOT_AVAILABLE')
+
+      await controller.submit()(req, res, null)
+
+      expect(res.redirect).toHaveBeenCalledWith(`/video-link-not-available/12`)
     })
 
     it('should submit perform an update', async () => {
       bookingService.get.mockResolvedValue(bookingDetails)
-      availabilityCheckService.getAvailability.mockResolvedValue(availableLocations)
+      bookingService.update.mockResolvedValue('AVAILABLE')
 
-      req.params.bookingId = '12'
       req.body = { preLocation: '9', mainLocation: '10', postLocation: '11', comment: 'A comment' }
 
       await controller.submit()(req, res, null)
@@ -271,9 +254,8 @@ describe('Select available rooms controller', () => {
 
     it('should submit perform an update with optional fields', async () => {
       bookingService.get.mockResolvedValue(bookingDetails)
-      availabilityCheckService.getAvailability.mockResolvedValue(availableLocations)
+      bookingService.update.mockResolvedValue('AVAILABLE')
 
-      req.params.bookingId = '12'
       req.signedCookies = {
         'booking-update': {
           date: '2020-11-20T00:00:00',
@@ -302,8 +284,7 @@ describe('Select available rooms controller', () => {
 
     it('should clear cookie when no errors exist', async () => {
       bookingService.get.mockResolvedValue(bookingDetails)
-      availabilityCheckService.getAvailability.mockResolvedValue(availableLocations)
-      req.params.bookingId = '12'
+      bookingService.update.mockResolvedValue('AVAILABLE')
 
       await controller.submit()(req, res, null)
 
@@ -313,7 +294,6 @@ describe('Select available rooms controller', () => {
     describe('when errors are present', () => {
       beforeEach(() => {
         req.errors = [{ text: 'error message', href: 'error' }]
-        req.params.bookingId = '12'
       })
 
       it('should place errors into flash', async () => {
