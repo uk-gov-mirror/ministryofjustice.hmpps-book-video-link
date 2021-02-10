@@ -1,3 +1,6 @@
+const { forenameToInitial } = require('../utils')
+const config = require('../config')
+
 module.exports = ({ oauthApi }) => async (req, res, next) => {
   if (!req.xhr) {
     if (!req.session.userDetails) {
@@ -13,10 +16,15 @@ module.exports = ({ oauthApi }) => async (req, res, next) => {
 
     const { name, username } = req.session.userDetails
 
+    const returnUrl = `${req.protocol}://${req.get('host')}${req.originalUrl}`
+    const clientID = config.apis.oauth2.clientId
+
     res.locals.user = {
       ...res.locals.user,
-      displayName: name,
+      displayName: forenameToInitial(name),
       username,
+      returnUrl,
+      clientID,
     }
 
     res.locals.userRoles = req.session.userRoles
