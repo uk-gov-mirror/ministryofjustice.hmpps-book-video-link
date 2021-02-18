@@ -130,21 +130,6 @@ module.exports = {
       },
     }),
 
-  stubOffenderBookings: response =>
-    stubFor({
-      request: {
-        method: 'GET',
-        urlPattern: `/api/bookings\\?bookingId=.*`,
-      },
-      response: {
-        status: 200,
-        headers: {
-          'Content-Type': 'application/json;charset=UTF-8',
-        },
-        jsonBody: response,
-      },
-    }),
-
   stubOffenderBooking: (bookingId, response) =>
     stubFor({
       request: {
