@@ -53,6 +53,7 @@ describe('Request path Start controller', () => {
           {
             text: 'HMP Wandsworth',
             value: 'WWI',
+            selected: false,
           },
         ],
       })
@@ -81,6 +82,7 @@ describe('Request path Start controller', () => {
           {
             text: 'HMP Wandsworth',
             value: 'WWI',
+            selected: true,
           },
         ],
         formValues: {
